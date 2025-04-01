@@ -4,31 +4,50 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
-const Carousel = () => {
-        return (
-        <div className="mt-24 w-100 h-300 relative z-30 h-64 ml-25 justify-center items-center">
-        <Swiper 
+
+    const Carousel = () => {
+    return (
+    <div className="w-full h-50 relative mt-10" style={{ zIndex: 10 }}> 
+    <Swiper 
         modules={[Navigation, Pagination, Autoplay]}
-        spaceBetween={50}
-        slidesPerView={1}
+        spaceBetween={20} 
+        slidesPerView={1} 
+        breakpoints={{
+          768: { 
+            slidesPerView: 2,
+          },
+          1024: {
+            slidesPerView: 3,
+          },
+        }}
         navigation
-        pagination={{ clickable: false }}
-        
-    >
-        <SwiperSlide>
-        <img src="src/assets/auris.jpg" alt="auriculares" className="w-full h-full object-cover" />
-        </SwiperSlide>
+        pagination={{ clickable: true }} 
+        autoplay={{ delay: 1000, disableOnInteraction: false }} 
+        loop={true} 
+        speed={800} 
+        >
+    <SwiperSlide>
+    <img src="src/assets/computer.jpg" alt="computer" className="w-full h-full object-fit:cover" /> 
+    </SwiperSlide>
 
-        <SwiperSlide>
-        <img src="src/assets/telefono.jpg" alt="telefono" className="w-full h-full object-cover" />
-        </SwiperSlide>
+    <SwiperSlide>
+    <img src="src/assets/freezer.jpg" alt="telefono" className="w-full h-full object-fit:cover" />
+    </SwiperSlide>
 
-        <SwiperSlide>
-        <img src="src/assets/desktop.avif" alt="Imagen 3" className="w-full h-full object-cover" />
-        </SwiperSlide>
-        </Swiper>
-        </div>
-);
+    <SwiperSlide>
+    <img src="src/assets/market.jpg" alt="market" className="w-full h-full object-fit:cover" />
+    </SwiperSlide>
+
+    <SwiperSlide>
+    <img src="src/assets/orange.jpg" alt="orange" className="w-full h-full object-fit:cover" />
+    </SwiperSlide>
+
+    <SwiperSlide>
+    <img src="src/assets/toallas.jpg" alt="toallas" className="w-full h-full object-fit:cover" />
+    </SwiperSlide>
+    </Swiper>
+    </div>
+  );
 };
 
 export default Carousel;

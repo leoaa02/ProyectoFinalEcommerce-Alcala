@@ -15,7 +15,7 @@ import { Link } from "react-router";
     
             <button
             onMouseEnter={() => setIsOpen(true)}
-            onMouseLeave={() => setIsOpen(false)}
+            onMouseLeave={() => setIsOpen(true)}
             className="text-black px-4 py-2 rounded-md hover:bg-sky-400 hover:text-white transition-all cursor-pointer"
             >
             Categoria

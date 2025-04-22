@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter,Routes,Route } from "react-router";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/navbar'
 import ItemListContainer from './components/ItemListContainer'
 import Carousel from './components/carousel';
@@ -12,7 +12,14 @@ import Products from './components/products';
 import CategoryProducts from './components/categoryProducts';
 import ItemDetailContainer from './components/itemDetailContainer';
 
+
+
+
+
         function App() { 
+        useEffect(()=>{
+                
+        },[])
         const [products, setProducts] = useState([]);
         return (
         <>
@@ -26,6 +33,7 @@ import ItemDetailContainer from './components/itemDetailContainer';
         <>
         <Carousel />
         <FeaturedProducts />
+        
         </>
         } />
 

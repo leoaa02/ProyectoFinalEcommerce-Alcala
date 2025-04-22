@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import Dropdown from "./dropdown";
 import { Link } from "react-router"; 
+import { CartContext } from "../context/cartContext";
+import { useContext } from "react";
 
     function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const itemsInCart = 5;
-
+    const {getProductsQuantity}= useContext(CartContext);  
+    const itemsInCart = {getProductsQuantity};
+    
     return (
         <header className='flex relative z-20 justify-between items-center text-black py-6 px-8 md:px-32 bg-white drop-shadow-md'>
         <div className="flex items-center gap-4">

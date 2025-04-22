@@ -7,7 +7,7 @@ import ItemListContainer from "./ItemListContainer";
     return (
         <>
         <h1 className="mt-20 text-white text-xl font-arial text-center font-serif ">Todos los Productos</h1>
-        <div style={{ display: 'flex', justifyContent: "flex-start", alignItems: "flex-start", height: '300px' }}>
+        <div style={{ display: 'flex', justifyContent: "center", alignItems: "flex-start", height: '300px' }}>
         <Lottie animationData={animationGirlMarket} style={{ width: 300, height: 300,}} />
         </div>
         <Container>

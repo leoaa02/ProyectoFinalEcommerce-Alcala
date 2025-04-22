@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import Lottie from 'lottie-react';
 import animationData from '../assets/loading.json';
+import ItemCount from './itemCount';
 
     function ItemDetailComponent() {
     const { productId } = useParams();
@@ -57,7 +58,9 @@ import animationData from '../assets/loading.json';
         </div>
         <p className="text-gray-700 mb-4">{product.description}</p>
         <p className="text-lg font-semibold">Precio: ${product.price}</p>
+        <ItemCount product={product.detail} />
         </div>
+        
         </div>
 );}
     

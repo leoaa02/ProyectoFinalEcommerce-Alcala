@@ -5,9 +5,9 @@ import { Link } from "react-router";
             
             const [isOpen, setIsOpen] = useState(false);
             const categoryMap = {
-                Computación: "laptops",
-                Celulares: "smartphones",
-                Tablets: "tablets",
+                Computación: "notebook",
+                Celulares: "smartphone",
+                Tablets: "tablet",
                 
             };    
             return (
@@ -38,6 +38,7 @@ import { Link } from "react-router";
             
             </div>)}
             </div>
+            
 );
 }
 

@@ -1,13 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Dropdown from "./dropdown";
-import { Link } from "react-router"; 
+import { Link, useNavigate } from "react-router"; 
+import ProductCard from "./Cart/cart";
 import { CartContext } from "../context/cartContext";
-import { useContext } from "react";
+
+
 
     function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const {getProductsQuantity}= useContext(CartContext);  
-    const itemsInCart = {getProductsQuantity};
+    const {getProductsQuantity, cart}= useContext(CartContext); 
+    const quantity= getProductsQuantity();
+    
+    const navigate= useNavigate();
+
+    const toggleCartVisibility = () => {
+        setIsCartVisible(!isCartVisible);
+    };
+    
     
     return (
         <header className='flex relative z-20 justify-between items-center text-black py-6 px-8 md:px-32 bg-white drop-shadow-md'>
@@ -24,9 +33,6 @@ import { useContext } from "react";
         <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer">
         <Link to="/" className="text-black no-underline">Inicio</Link>
         </li>
-        <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer">
-        <Link to="/products" className="text-black no-underline">Productos</Link>
-        </li>
         <Dropdown />
         <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer">
         <Link to="/contacto" className="text-black no-underline">Contacto</Link>
@@ -34,12 +40,14 @@ import { useContext } from "react";
         </ul>
 
         <div className="relative hidden md:flex items-center justify-center gap-3">
+            <Link to="/cart" className="text-black no-underline">
         <i className="bx bx-cart-add absolute left-3 text-2xl text-gray-500 cursor-pointer"></i>
-        {itemsInCart > 0 && (
+        {quantity > 0 && (
         <span className="absolute top-0 right-0 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">
-            {itemsInCart}
+            {quantity}
         </span>
         )}
+        </Link>
         </div>
 
         <i
@@ -58,16 +66,27 @@ import { useContext } from "react";
         <Link to="/" className="text-black no-underline">Inicio</Link>
         </li>
         <li className="list-none w-full text-center p-4 hover:bg-sky-400 hover:text-white transition-all cursor-pointer">
-        <Link to="/products" className="text-black no-underline">Productos</Link>
-        </li>
-        <li className="list-none w-full text-center p-4 hover:bg-sky-400 hover:text-white transition-all cursor-pointer">
         <Dropdown/>
         </li>
         <li className="list-none w-full text-center p-4 hover:bg-sky-400 hover:text-white transition-all cursor-pointer">
         <Link to="/contacto" className="text-black no-underline">Contacto</Link>
         </li>
+        <li className="list-none w-full text-center p-4 hover:bg-sky-400 hover:text-white transition-all cursor-pointer">
+        <Link to="/cart" className="text-black no-underline">Carrito</Link>
+        </li>
         </ul>
         </div>
+        <div className="flex items-center gap-4">
+                <div className="cartIconContainer" onClick={toggleCartVisibility}>
+                    <i className="fas fa-shopping-cart text-xl"></i>
+                    {quantity > 0 && (
+                        <span className="cartBadge">{quantity}</span>
+                    )}
+                </div>
+            </div>
+                
+                
+                
     </header>
 );
 }

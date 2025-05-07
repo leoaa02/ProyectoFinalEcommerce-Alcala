@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import animationData from '../assets/loading.json';
 import ItemCount from './itemCount';
@@ -12,6 +12,7 @@ function ItemDetailContainer() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [addedToCart, setAddedToCart] = useState(false);
+    const { addItem } = useContext(CartContext);
 
     useEffect(() => {
         setLoading(true);
@@ -27,8 +28,12 @@ function ItemDetailContainer() {
             });
     }, [productId]);
 
-        
-
+    const handleAddToCart = (quantity) => {
+        if (item) {
+            addItem(item, quantity);
+            setAddedToCart(true);
+        }
+    };
 
     if (loading) {
         return (
@@ -56,8 +61,25 @@ function ItemDetailContainer() {
                     )}
                 </div>
                 <p className="text-gray-700 mb-4">{item.description}</p>
-                <p className="text-lg font-semibold">Precio: ${item.price}</p>
-                <ItemCount product={item} />
+                <p className="text-lg font-semibold mb-4">Precio: ${item.price}</p>
+                {!addedToCart ? (
+                    <ItemCount 
+                        product={item} 
+                        onAdd={handleAddToCart}
+                        initial={1}
+                        stock={item.stock || 10}
+                    />
+                ) : (
+                    <div className="text-center">
+                        <p className="text-green-600 font-semibold mb-2">¡Producto añadido al carrito!</p>
+                        <button 
+                            onClick={() => setAddedToCart(false)}
+                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                        >
+                            Añadir más
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

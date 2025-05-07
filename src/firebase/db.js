@@ -1,17 +1,43 @@
-import { doc, getFirestore, getDoc, collection,getDocs,query, where, addDoc } from "firebase/firestore";
+import { doc, getFirestore, getDoc, collection, getDocs, query, where, addDoc } from "firebase/firestore";
 import { app } from "./firebase";
 
+export const db = getFirestore(app);
 
-export const db= getFirestore(app);
+export async function getItems(params) {
+    try {
+        console.log("Iniciando getItems");
+        const productsCollection = collection(db, "products");
+        console.log("Colección obtenida");
+        
+        const querySnapshot = await getDocs(productsCollection);
+        console.log("QuerySnapshot obtenido, número de documentos:", querySnapshot.size);
+        
+        if (querySnapshot.empty) {
+            console.log("No se encontraron documentos en la colección");
+            return [];
+        }
 
-    export async function getItems(params) {
-    const querySnapshot= await getDocs(collection(db,"products"))
-    const items=[]
-    querySnapshot.forEach ((doc)=>{
-        items.push(doc.data())
-    })
-    
-    return items}
+        const items = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            console.log("Procesando documento:", { id: doc.id, ...data });
+            items.push({
+                id: doc.id,
+                ...data
+            });
+        });
+        
+        console.log("Total de items procesados:", items.length);
+        return items;
+    } catch (error) {
+        console.error("Error en getItems:", error);
+        if (error.code === 'permission-denied') {
+            throw new Error('Error de permisos: No se puede acceder a los productos. Por favor, verifica las reglas de seguridad en Firebase.');
+        } else {
+            throw new Error('Error al cargar los productos: ' + error.message);
+        }
+    }
+}
     
         export const getSingleItem = async (itemId) => {
         try {
@@ -50,13 +76,29 @@ export const db= getFirestore(app);
         
         
 
-        export const createOrder= async (order)=>{
-            try{
-                const docRef= await addDoc(collection(db,"orders"), order)
-
+        export const createOrder = async (order) => {
+            try {
+                console.log("Iniciando creación de orden:", order);
+                const ordersCollection = collection(db, "orders");
+                console.log("Colección de órdenes obtenida");
                 
-                console.log("Document written with", docRef.id);
-            }   catch(e){
-                console.error ("Error happening", e);
+                const orderData = {
+                    ...order,
+                    createdAt: new Date(),
+                    status: 'pending'
+                };
+                console.log("Datos de la orden preparados:", orderData);
+                
+                const docRef = await addDoc(ordersCollection, orderData);
+                console.log("Orden creada con ID:", docRef.id);
+                
+                return docRef.id;
+            } catch (error) {
+                console.error("Error detallado al crear la orden:", {
+                    message: error.message,
+                    code: error.code,
+                    stack: error.stack
+                });
+                throw new Error('Error al crear la orden: ' + error.message);
             }
         } 

@@ -1,9 +1,7 @@
-import React, { useState, useContext } from "react";
-import { CartContext } from "../context/cartContext"; 
+import React, { useState } from "react";
 
-function ItemCount({ product }) { 
-    const [count, setCount] = useState(1); 
-    const { addProduct } = useContext(CartContext); 
+function ItemCount({ product, onAdd, initial = 1, stock = 10 }) { 
+    const [count, setCount] = useState(initial); 
 
     const handleSub = () => {
         if (count > 1) { 
@@ -12,23 +10,38 @@ function ItemCount({ product }) {
     };
 
     const handleAdd = () => {
-        setCount(count + 1);
+        if (count < stock) {
+            setCount(count + 1);
+        }
     };
 
-    const handleAddProduct = () => {
-        addProduct({ ...product, quantity: count }); 
+    const handleAddToCart = () => {
+        onAdd(count);
     };
 
     return (
-        <div>
-            <p>{count} </p>
-            <button className="see-more-button text-white no-underline" onClick={handleSub}>
-                -
-            </button>
-            <button className="see-more-button text-white no-underline" onClick={handleAdd}>
-                +
-            </button>
-            <button className="see-more-button text-white no-underline" onClick={handleAddProduct}>
+        <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center gap-4">
+                <button 
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full transition-colors"
+                    onClick={handleSub}
+                    disabled={count <= 1}
+                >
+                    -
+                </button>
+                <span className="text-xl font-semibold">{count}</span>
+                <button 
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full transition-colors"
+                    onClick={handleAdd}
+                    disabled={count >= stock}
+                >
+                    +
+                </button>
+            </div>
+            <button 
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full transition-colors"
+                onClick={handleAddToCart}
+            >
                 Agregar al carrito
             </button>
         </div>

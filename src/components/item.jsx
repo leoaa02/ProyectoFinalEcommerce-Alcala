@@ -1,42 +1,60 @@
-import { Button, Card, CardImg, CardBody, CardTitle, CardText, Col, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Link } from "react-router";
+import { Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function Item({ item }) {
+    if (!item) return null;
+
     return (
-        <Col lg={3} md={6} sm={12} className="mb-4">
+        <motion.div 
+            className="col-lg-3 col-md-6 col-sm-12 mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
             <Card className="item-card custom-card">
-                {item && item.thumbnail && (
-                    <Card.Img
-                        variant="top"
-                        src={item.thumbnail}
-                        style={{ height: '200px', objectFit: 'cover' }}
-                        alt={item.name}
-                    />
+                {item.thumbnail && (
+                    <div className="card-img-container">
+                        <Card.Img
+                            variant="top"
+                            src={item.thumbnail}
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                            }}
+                            alt={item.name || 'Producto'}
+                        />
+                    </div>
                 )}
 
                 <Card.Body className="item-card-body">
-                    <Card.Title className="item-title">{item.name}</Card.Title>
-                    <Card.Subtitle className="item-category">{item.category}</Card.Subtitle>
-                    <OverlayTrigger
-                        placement="bottom"
-                        overlay={
-                            <Tooltip id={`tooltip-${item.id}`}>
-                                {item.description}
-                            </Tooltip>
-                        }
-                    >
-                        <CardText className="item-card-description item-description">{item.description}</CardText>
-                    </OverlayTrigger>
+                    <div>
+                        <Card.Title className="item-title">{item.name}</Card.Title>
+                        <Card.Subtitle className="item-category">{item.category}</Card.Subtitle>
+                        <Card.Text className="item-description">
+                            {item.description}
+                        </Card.Text>
+                    </div>
                     <div className="card-button-container">
-                        <Button variant="primary" className="see-more-button text-white">
-                            <Link to={`/product/${item.id}`} className="see-more-button text-white no-underline">
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            <Link 
+                                to={`/product/${item.id}`} 
+                                className="see-more-button"
+                            >
                                 Ver más
                             </Link>
-                        </Button>
+                        </motion.div>
                     </div>
                 </Card.Body>
             </Card>
-        </Col>
+        </motion.div>
     );
 }
 

@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { CartContext } from '../context/cartContext';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase/db';
-import { useNavigate } from 'react-router';
+import { CartContext } from '../context/cartContext.jsx';
+import { createOrder } from '../firebase/db';
+import { useNavigate } from 'react-router-dom';
 import withLoading from './hoc/loading';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Checkout = () => {
-    const { cart, getProductsQuantity } = useContext(CartContext);
+    const { cart, getProductsQuantity, clearCart } = useContext(CartContext);
     const totalQuantity = getProductsQuantity();
     const [orderId, setOrderId] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -26,6 +26,11 @@ const Checkout = () => {
 
         if (!nombre || !email || !numero) {  
             setError('Por favor, ingresa tu nombre, email y número.');
+            return;
+        }
+
+        if (cart.length === 0) {
+            setError('El carrito está vacío.');
             return;
         }
 
@@ -49,58 +54,132 @@ const Checkout = () => {
                 date: new Date(),
             };
 
-            const docRef = await addDoc(collection(db, 'orders'), orderData);
-            setOrderId(docRef.id);
-            clearCart();  
-            navigate(`/order/${docRef.id}`);
-        } catch (e) {
-            return('Error al generar la orden: ', e);
-            setError('Hubo un error al generar la orden. Por favor, intenta nuevamente.');
+            console.log("Enviando datos de la orden:", orderData);
+            
+            if (!orderData.items || orderData.items.length === 0) {
+                throw new Error('No hay items en el carrito');
+            }
+
+            if (!orderData.buyer.nombre || !orderData.buyer.email || !orderData.buyer.numero) {
+                throw new Error('Faltan datos del comprador');
+            }
+
+            const newOrderId = await createOrder(orderData);
+            console.log("Orden creada con ID:", newOrderId);
+            
+            if (!newOrderId) {
+                throw new Error('No se pudo generar el ID de la orden');
+            }
+
+            setOrderId(newOrderId);
+            clearCart();
+            navigate(`/order/${newOrderId}`);
+        } catch (error) {
+            console.error('Error detallado en el checkout:', {
+                message: error.message,
+                code: error.code,
+                stack: error.stack
+            });
+            setError(error.message || 'Hubo un error al generar la orden. Por favor, intenta nuevamente.');
         } finally {
             setLoading(false);
         }
     };
 
     if (loading) {
-        return withLoading()
+        return withLoading();
     }
 
     if (error) {
-        return <p style={{ color: 'red' }}>{error}</p>;
+        return (
+            <motion.div 
+                className="checkout-container"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <p className="text-red-500">{error}</p>
+            </motion.div>
+        );
     }
 
     if (orderId) {
         return (
-            <div className="mt-10 bg-white rounded-md mx-auto text-center max-w-lg py-2">
-                <h2 className="text-2xl font-bold mb-4">¡Orden generada con éxito!</h2>
-                <p className="mb-2">Tu número de orden es: <strong className="text-blue-500">{orderId}</strong></p>
-                <button onClick={() => navigate('/')} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Volver a la tienda</button>
-            </div>
+            <motion.div 
+                className="checkout-success"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <h2>¡Orden generada con éxito!</h2>
+                <p>Tu número de orden es: <strong>{orderId}</strong></p>
+                <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => navigate('/')} 
+                    className="checkout-button"
+                >
+                    Volver a la tienda
+                </motion.button>
+            </motion.div>
         );
     }
 
     return (
-        <div className="p-4 bg-white rounded">
+        <motion.div 
+            className="checkout-container"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
             <h2 className="text-2xl font-bold mb-4">Checkout</h2>
             {totalQuantity === 0 ? (
-                <p>No hay productos en el carrito.</p>
+                <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    No hay productos en el carrito.
+                </motion.p>
             ) : (
                 <div>
                     <h3 className="resumen-title-checkout">Resumen del Carrito</h3>
-                    {cart.map(item => (
-                        <div key={item.id} className="flex justify-between items-center py-2 border-b border-gray-200">
-                            <span className="item-name-checkout">{item.name}</span>
-                            <span>{item.quantity} x ${item.price} = ${item.quantity * item.price}</span>
-                        </div>
-                    ))}
-                    <div className="flex justify-between items-center mt-4">
+                    <AnimatePresence>
+                        {cart.map((item, index) => (
+                            <motion.div 
+                                key={item.id} 
+                                className="checkout-item"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 20 }}
+                                transition={{ duration: 0.3, delay: index * 0.1 }}
+                            >
+                                <span className="checkout-item-name">{item.name}</span>
+                                <span className="checkout-item-price">
+                                    {item.quantity} x ${item.price} = ${item.quantity * item.price}
+                                </span>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                    <motion.div 
+                        className="flex justify-between items-center mt-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                    >
                         <span className="font-bold">Total:</span>
                         <span>${calculateTotal()}</span>
-                    </div>
+                    </motion.div>
 
-                    <form onSubmit={handleCheckout} className="mt-4">
-                        <div className="mb-4">
-                            <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">
+                    <motion.form 
+                        onSubmit={handleCheckout} 
+                        className="checkout-form"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                    >
+                        <div className="form-group">
+                            <label htmlFor="nombre" className="form-label">
                                 Nombre:
                             </label>
                             <input
@@ -109,11 +188,11 @@ const Checkout = () => {
                                 value={nombre}
                                 onChange={(e) => setNombre(e.target.value)}
                                 required
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="form-input"
                             />
                         </div>
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+                        <div className="form-group">
+                            <label htmlFor="email" className="form-label">
                                 Email:
                             </label>
                             <input
@@ -122,32 +201,34 @@ const Checkout = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}  
                                 required
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="form-input"
                             />
                         </div>
-                        <div className="mb-4">
-                            <label htmlFor="numero" className="block text-gray-700 text-sm font-bold mb-2">
+                        <div className="form-group">
+                            <label htmlFor="numero" className="form-label">
                                 Número de Teléfono:
                             </label>
                             <input
-                                type="telephone"  
+                                type="tel"  
                                 id="numero"
                                 value={numero}
                                 onChange={(e) => setNumero(e.target.value)}
                                 required
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="form-input"
                             />
                         </div>
-                        <button
+                        <motion.button
                             type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            className="checkout-button"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                         >
                             Finalizar Compra
-                        </button>
-                    </form>
+                        </motion.button>
+                    </motion.form>
                 </div>
             )}
-        </div>
+        </motion.div>
     );
 };
 

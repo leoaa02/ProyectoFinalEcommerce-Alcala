@@ -3,6 +3,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import computerImg from '../assets/computer.jpg';
+import freezerImg from '../assets/freezer.jpg';
+import marketImg from '../assets/market.jpg';
+import orangeImg from '../assets/orange.jpg';
+import toallasImg from '../assets/toallas.jpg';
+
 
 
     const Carousel = () => {
@@ -27,23 +33,23 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
         speed={800} 
         >
     <SwiperSlide>
-    <img src="src/assets/computer.jpg" alt="computer" className="w-full h-full object-fit:cover" /> 
+    <img src={computerImg} alt="computer" className="w-full h-full object-fit:cover" /> 
     </SwiperSlide>
 
     <SwiperSlide>
-    <img src="src/assets/freezer.jpg" alt="telefono" className="w-full h-full object-fit:cover" />
+    <img src={freezerImg} alt="freezer" className="w-full h-full object-fit:cover" />
     </SwiperSlide>
 
     <SwiperSlide>
-    <img src="src/assets/market.jpg" alt="market" className="w-full h-full object-fit:cover" />
+    <img src={marketImg} alt="market" className="w-full h-full object-fit:cover" />
     </SwiperSlide>
 
     <SwiperSlide>
-    <img src="src/assets/orange.jpg" alt="orange" className="w-full h-full object-fit:cover" />
+    <img src={orangeImg} alt="orange" className="w-full h-full object-fit:cover" />
     </SwiperSlide>
 
     <SwiperSlide>
-    <img src="src/assets/toallas.jpg" alt="toallas" className="w-full h-full object-fit:cover" />
+    <img src={toallasImg} alt="toallas" className="w-full h-full object-fit:cover" />
     </SwiperSlide>
     </Swiper>
     </div>

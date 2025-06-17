@@ -3,6 +3,8 @@ import Dropdown from "./dropdown";
 import { Link, useNavigate } from "react-router"; 
 import ProductCard from "./Cart/cart";
 import { CartContext } from "../context/cartContext";
+import rocketImg from '../../assets/rocket.png';
+
 
 
 
@@ -23,13 +25,13 @@ import { CartContext } from "../context/cartContext";
         <div className="flex items-center gap-4">
         <Link to="/" className="astro flex items-center font-segovia text-xl text-black no-underline">
         Astro Buy
-        <img src="src/assets/rocket.png" alt="rocket" className="w-12 hover:scale-105 transition-all"
+        <img src={rocketImg} alt="rocket" className="w-12 hover:scale-105 transition-all"
         />
         </Link>
         
         </div>
 
-        <ul className="hidden xl:flex items-center gap-12 font-semibold text-base">
+        <ul className="hidden lg:flex items-center gap-12 font-semibold text-base">
         <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer">
         <Link to="/" className="text-black no-underline">Inicio</Link>
         </li>
@@ -39,7 +41,7 @@ import { CartContext } from "../context/cartContext";
         </li>
         </ul>
 
-        <div className="relative hidden md:flex items-center justify-center gap-3">
+        <div className="relative hidden lg:flex items-center justify-center gap-3">
             <Link to="/cart" className="text-black no-underline">
         <i className="bx bx-cart-add absolute left-3 text-2xl text-gray-500 cursor-pointer"></i>
         {quantity > 0 && (
@@ -51,7 +53,7 @@ import { CartContext } from "../context/cartContext";
         </div>
 
         <i
-        className="bx bx-menu xl:hidden block text-5xl cursor-pointer"
+        className="bx bx-menu lg:hidden block text-5xl cursor-pointer"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         ></i>
 

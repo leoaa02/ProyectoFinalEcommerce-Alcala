@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import Dropdown from "./dropdown";
-import { Link, useNavigate } from "react-router"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import ProductCard from "./Cart/cart";
 import { CartContext } from "../context/cartContext";
-import rocketImg from '../../assets/rocket.png';
+import rocketImg from '../assets/rocket.png';
 
 
 
